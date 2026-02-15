@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tom Ford - Acceso</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="card">
+        <h2>
+          TOM FORD <br /><span style="font-size: 12px; color: gray"
+            >INTERNAL SYSTEM</span
+          >
+        </h2>
+        <form id="authForm">
+          <input type="text" id="username" placeholder="Usuario" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="Contraseña"
+            required
+          />
+          <button type="submit" id="btnSubmit">INICIAR SESIÓN</button>
+        </form>
+        <p
+          id="toggleText"
+          style="
+            font-size: 12px;
+            margin-top: 15px;
+            cursor: pointer;
+            text-decoration: underline;
+            color: #666;
+          "
+        >
+          ¿No tienes cuenta? Regístrate aquí
+        </p>
+        <p id="msg" class="error"></p>
+      </div>
+    </div>
+
+    <div id="msgModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-title" id="msgTitle">AVISO</div>
+        <div class="modal-msg" id="msgText">Mensaje del sistema</div>
+        <button onclick="cerrarMsgModal()">ENTENDIDO</button>
+      </div>
+    </div>
+
+    <script>
+      let isLogin = true;
+      let actionAfterClose = null; // Para saber qué hacer al cerrar el modal
+
+      const form = document.getElementById("authForm");
+      const msg = document.getElementById("msg");
+      const btnSubmit = document.getElementById("btnSubmit");
+      const toggleText = document.getElementById("toggleText");
+
+      // Función para mostrar el Modal en lugar de alert
+      function showModal(titulo, texto, callback = null) {
+        document.getElementById("msgTitle").innerText = titulo;
+        document.getElementById("msgText").innerText = texto;
+        document.getElementById("msgModal").style.display = "flex";
+        actionAfterClose = callback;
+      }
+
+      function cerrarMsgModal() {
+        document.getElementById("msgModal").style.display = "none";
+        if (actionAfterClose) actionAfterClose(); // Ejecutar acción pendiente (ej: recargar)
+      }
+
+      toggleText.addEventListener("click", () => {
+        isLogin = !isLogin;
+        toggleText.innerText = isLogin
+          ? "¿No tienes cuenta? Regístrate aquí"
+          : "¿Ya tienes cuenta? Inicia sesión";
+        btnSubmit.innerText = isLogin ? "INICIAR SESIÓN" : "REGISTRARSE";
+        msg.style.display = "none";
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
+
+        try {
+          const res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+          const data = await res.json();
+
+          if (res.ok) {
+            if (isLogin) {
+              localStorage.setItem("token", data.token);
+              window.location.href = "dashboard.html";
+            } else {
+              // AQUÍ CAMBIAMOS EL ALERT POR EL MODAL
+              showModal(
+                "REGISTRO EXITOSO",
+                "Tu cuenta ha sido creada. Por favor inicia sesión.",
+                () => {
+                  window.location.reload();
+                },
+              );
+            }
+          } else {
+            msg.innerText = data.message || data.error;
+            msg.style.display = "block";
+          }
+        } catch (err) {
+          msg.innerText = "Error de conexión con el servidor";
+          msg.style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>
