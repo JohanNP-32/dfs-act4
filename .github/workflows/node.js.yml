@@ -22,7 +22,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          # Eliminamos el prefijo de la carpeta porque ya estás en la raíz
           cache-dependency-path: "package-lock.json"
 
       - name: Install dependencies

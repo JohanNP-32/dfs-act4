@@ -50,14 +50,13 @@
 
     <script>
       let isLogin = true;
-      let actionAfterClose = null; // Para saber qué hacer al cerrar el modal
+      let actionAfterClose = null;
 
       const form = document.getElementById("authForm");
       const msg = document.getElementById("msg");
       const btnSubmit = document.getElementById("btnSubmit");
       const toggleText = document.getElementById("toggleText");
 
-      // Función para mostrar el Modal en lugar de alert
       function showModal(titulo, texto, callback = null) {
         document.getElementById("msgTitle").innerText = titulo;
         document.getElementById("msgText").innerText = texto;
@@ -67,7 +66,7 @@
 
       function cerrarMsgModal() {
         document.getElementById("msgModal").style.display = "none";
-        if (actionAfterClose) actionAfterClose(); // Ejecutar acción pendiente (ej: recargar)
+        if (actionAfterClose) actionAfterClose();
       }
 
       toggleText.addEventListener("click", () => {
@@ -98,7 +97,6 @@
               localStorage.setItem("token", data.token);
               window.location.href = "dashboard.html";
             } else {
-              // AQUÍ CAMBIAMOS EL ALERT POR EL MODAL
               showModal(
                 "REGISTRO EXITOSO",
                 "Tu cuenta ha sido creada. Por favor inicia sesión.",

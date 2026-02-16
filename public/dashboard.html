@@ -118,9 +118,8 @@
       if (!token) window.location.href = "index.html";
 
       let productosGlobales = [];
-      let idParaBorrar = null; // Guardamos aquí el ID mientras el usuario confirma
+      let idParaBorrar = null;
 
-      // --- SISTEMA DE MODALES ---
       function showMsg(titulo, texto) {
         document.getElementById("msgTitle").innerText = titulo;
         document.getElementById("msgText").innerText = texto;
@@ -130,7 +129,6 @@
         document.getElementById("msgModal").style.display = "none";
       }
 
-      // --- CARGAR PRODUCTOS ---
       async function cargarProductos() {
         try {
           const res = await fetch("/api/products");
@@ -160,7 +158,6 @@
         }
       }
 
-      // --- CREAR ---
       async function crearProducto() {
         const nombre = document.getElementById("pName").value;
         const precio = document.getElementById("pPrice").value;
@@ -191,7 +188,6 @@
         }
       }
 
-      // --- ELIMINAR (CON POP UP) ---
       function pedirConfirmacionBorrar(id) {
         idParaBorrar = id;
         document.getElementById("confirmModal").style.display = "flex";
@@ -202,7 +198,6 @@
         document.getElementById("confirmModal").style.display = "none";
       }
 
-      // Al hacer clic en el botón "ELIMINAR" del modal negro
       document.getElementById("btnConfirmDelete").onclick = async () => {
         if (!idParaBorrar) return;
         try {
@@ -221,7 +216,6 @@
         }
       };
 
-      // --- EDITAR ---
       function abrirEdicion(id) {
         const prod = productosGlobales.find((p) => p._id === id);
         if (prod) {
