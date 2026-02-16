@@ -12,7 +12,7 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(cors());
-app.use(express.static('public')); 
+app.use(express.static(path.join(__dirname, 'public'))); 
 
 // Conexión a MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -20,15 +20,13 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((err) => console.error('Error de conexión:', err));
 
 // Usar Rutas
-app.use('/api/auth', authRoutes);      // Todo lo que empiece con /api/auth
-app.use('/api/products', productRoutes); // Todo lo que empiece con /api/products
+app.use('/api/auth', authRoutes);      
+app.use('/api/products', productRoutes); 
 
 // Ruta base
-app.get('/', (req, res) => {
-    res.send('API de Productos Tom Ford v1.0 🚀');
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
-// ... (todo tu código anterior sigue igual)
 
 const PORT = process.env.PORT || 3000;
 
