@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path'); // Asegúrate de tener esta línea
+const path = require('path'); 
 
 // Importar rutas
 const authRoutes = require('./src/routes/auth');
@@ -30,7 +30,7 @@ app.use('/api/products', productRoutes);
 // --- 4. RUTA PARA EL FRONTEND ---
 // Si el usuario entra a la raíz o cualquier otra ruta, le mandamos el index.html
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'inventario.html'));
 });
 
 const PORT = process.env.PORT || 3000;
