@@ -1,44 +1,20 @@
-name: Node.js CI
+steps:
+  - uses: actions/checkout@v4
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+  - name: Use Node.js ${{ matrix.node-version }}
+    uses: actions/setup-node@v4
+    with:
+      node-version: ${{ matrix.node-version }}
+      cache: "npm"
+      cache-dependency-path: "api-productos-mongo/package-lock.json"
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+  - name: Install dependencies
+    run: npm ci
+    working-directory: api-productos-mongo
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          # Corregimos la ruta para que encuentre tu package-lock.json
-          cache: "npm"
-          cache-dependency-path: "api-productos-mongo/package-lock.json"
-
-      - name: Install dependencies
-        # Entramos a la carpeta para instalar
-        run: npm ci
-        working-directory: api-productos-mongo
-
-      - name: Run build (if present)
-        run: npm run build --if-present
-        working-directory: api-productos-mongo
-
-      - name: Run tests
-        # Entramos a la carpeta para los tests y cargamos los secretos
-        run: npm test
-        working-directory: api-productos-mongo
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          PORT: 3000
+  - name: Run tests
+    run: npm test
+    working-directory: api-productos-mongo
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
