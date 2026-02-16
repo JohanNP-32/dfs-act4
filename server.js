@@ -28,9 +28,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 
 // --- 4. RUTA PARA EL FRONTEND ---
-// Si el usuario entra a la raíz o cualquier otra ruta, le mandamos el index.html
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'inventario.html'));
+// Esta sintaxis evita el error de path-to-regexp
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
