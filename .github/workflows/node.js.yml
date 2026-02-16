@@ -21,11 +21,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          # Aquí corregimos la ruta del caché para que encuentre el archivo
+          # Corregimos la ruta para que encuentre tu package-lock.json
           cache: "npm"
           cache-dependency-path: "api-productos-mongo/package-lock.json"
 
       - name: Install dependencies
+        # Entramos a la carpeta para instalar
         run: npm ci
         working-directory: api-productos-mongo
 
@@ -34,6 +35,7 @@ jobs:
         working-directory: api-productos-mongo
 
       - name: Run tests
+        # Entramos a la carpeta para los tests y cargamos los secretos
         run: npm test
         working-directory: api-productos-mongo
         env:
