@@ -1,31 +1,45 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
+        # Probamos en las versiones más estables, incluyendo la 22 que usas tú
         node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          # Cache de npm para que las instalaciones sean más rápidas
+          cache: "npm"
+          cache-dependency-path: "api-productos-mongo/package-lock.json"
+
+      - name: Install dependencies
+        # Instalamos las dependencias dentro de tu carpeta de proyecto
+        run: npm ci
+        working-directory: api-productos-mongo
+
+      - name: Run build (if present)
+        run: npm run build --if-present
+        working-directory: api-productos-mongo
+
+      - name: Run tests
+        # Ejecutamos Jest con las variables de entorno de GitHub Secrets
+        run: npm test
+        working-directory: api-productos-mongo
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PORT: 3000
