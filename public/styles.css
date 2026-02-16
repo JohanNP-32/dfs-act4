@@ -21,7 +21,7 @@ button:hover { background: #333; }
 
 /* --- DASHBOARD --- */
 .navbar { 
-    background: #000000; /* Header Negro */
+    background: #000000; 
     color: #ffffff; 
     padding: 20px 50px; 
     display: flex; justify-content: space-between; align-items: center; 
